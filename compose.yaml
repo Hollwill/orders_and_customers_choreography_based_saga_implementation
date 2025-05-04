@@ -1,0 +1,25 @@
+services:
+   postgres:
+    image: postgres:latest
+    ports:
+      - 5433:5432
+    volumes:
+      - pg_data_orders_and_customers:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+   rabbit_broker:
+     image: rabbitmq:3-management
+     ports:
+       - 5672:5672
+       - 15672:15672
+   mongo:
+     image: mongo:latest
+     ports:
+       - 27017:27017
+     volumes:
+       - mongo_data:/data/db
+volumes:
+  pg_data_orders_and_customers:
+  mongo_data:

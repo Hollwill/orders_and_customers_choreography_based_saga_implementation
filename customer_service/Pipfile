@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "0.115"
+sqlalchemy = {extras = ["async"], version = "*"}
+pydantic-settings = "*"
+alembic = "*"
+asyncpg = "==0.30.0"
+greenlet = "==3.2.0"
+faststream = "*"
+apscheduler = "*"
+aio-pika = "*"
+psycopg2-binary = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"
+python_full_version = "3.12.6"
