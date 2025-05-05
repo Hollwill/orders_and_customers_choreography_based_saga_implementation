@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 uvicorn = "*"
+pytest = "*"
+pytest-asyncio = "*"
 
 [dev-packages]
 

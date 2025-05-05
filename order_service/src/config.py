@@ -1,3 +1,5 @@
+from typing import Self
+
 from pydantic import PostgresDsn, RedisDsn, model_validator, AmqpDsn
 from pydantic_settings import BaseSettings
 
@@ -18,6 +20,16 @@ class Config(BaseSettings):
     # CORS_HEADERS: list[str]
 
     APP_VERSION: str = "1.0"
+
+    TEST_DATABASE_URL: PostgresDsn | None = None
+
+
+    @model_validator(mode='after')
+    def check_test_database(self) -> Self:
+        if self.ENVIRONMENT == Environment.TESTING and not self.TEST_DATABASE_URL:
+            raise ValueError('Test database URL must be provided')
+        return self
+
 
 
 settings = Config()

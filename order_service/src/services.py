@@ -1,6 +1,7 @@
 import datetime
 import logging
 
+from fastapi import HTTPException
 from faststream.exceptions import FastStreamException
 from faststream.rabbit import RabbitBroker
 from sqlalchemy import select
@@ -69,6 +70,13 @@ class OrderService(BaseService):
         order.cancel()
         await self.events_save_service.save(order.id, order.events)
         await self.session.flush()
+
+    async def get_order_by_id(self, item_id) -> Order:
+        result = await self.session.execute(select(Order).where(Order.id == item_id, Order.deleted_at.is_(None)))
+        order = result.scalar_one_or_none()
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found")
+        return order
 
 
 class OutboxSaveService:

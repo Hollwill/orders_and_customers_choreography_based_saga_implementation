@@ -22,12 +22,9 @@ async def get_orders_list(session: AsyncSession = Depends(get_session)) -> Seque
 
 
 @app.get("/orders/{item_id}")
-async def get_order(item_id: int, session: AsyncSession = Depends(get_session)) -> OrderSchema:
+async def get_order(item_id: int, session: AsyncSession = Depends(get_session), order_service: OrderService = Depends(get_order_service)) -> OrderSchema:
     async with session.begin():
-        result = await session.execute(select(Order).where(Order.id == item_id, Order.deleted_at.is_(None)))
-        order = result.scalar_one_or_none()
-        if not order:
-            raise HTTPException(status_code=404, detail="Order not found")
+        order = await order_service.get_order_by_id(item_id)
 
         return OrderSchema.model_validate(order, from_attributes=True)
 
