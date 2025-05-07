@@ -6,8 +6,7 @@ from src.events import OrderCreatedEvent
 from src.models import Order
 
 
-@pytest.mark.asyncio
-async def test_order_produce_created_event_on_create():
+def test_order_produce_created_event_on_create():
     order = Order.create(customer_id=1, order_total=100)
 
     for event in order.events:
@@ -20,8 +19,7 @@ async def test_order_produce_created_event_on_create():
         assert False, "order has not produced order_created event"
 
 
-@pytest.mark.asyncio
-async def test_order_customer_not_found():
+def test_order_customer_not_found():
     order = Order.create(customer_id=1, order_total=100)
 
     order.customer_not_found()
@@ -29,8 +27,7 @@ async def test_order_customer_not_found():
     assert order.state == OrderState.REJECTED
     assert order.rejection_reason == RejectionReason.UNKNOWN_CUSTOMER
 
-@pytest.mark.asyncio
-async def test_order_limit_exceeded():
+def test_order_limit_exceeded():
     order = Order.create(customer_id=1, order_total=100)
 
 
@@ -40,16 +37,14 @@ async def test_order_limit_exceeded():
     assert order.rejection_reason == RejectionReason.INSUFFICIENT_CREDIT
 
 
-@pytest.mark.asyncio
-async def test_order_credit_reservation():
+def test_order_credit_reservation():
     order = Order.create(customer_id=1, order_total=100)
 
     order.credit_reservation()
 
     assert order.state == OrderState.APPROVED
 
-@pytest.mark.asyncio
-async def test_order_credit_cancel():
+def test_order_credit_cancel():
     order = Order.create(customer_id=1, order_total=100)
     order.credit_reservation()
 
