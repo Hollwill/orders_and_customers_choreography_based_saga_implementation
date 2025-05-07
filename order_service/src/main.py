@@ -15,10 +15,11 @@ app = FastAPI()
 
 
 @app.get("/orders")
-async def get_orders_list(session: AsyncSession = Depends(get_session)) -> Sequence[OrderSchema]:
+async def get_orders_list(session: AsyncSession = Depends(get_session), order_service: OrderService = Depends(get_order_service)) -> Sequence[OrderSchema]:
     async with session.begin():
-        result = await session.execute(select(Order).where(Order.deleted_at.is_(None)))
-        return TypeAdapter(list[OrderSchema]).validate_python(result.scalars().all(), from_attributes=True)
+        orders = await order_service.get_list()
+
+        return TypeAdapter(list[OrderSchema]).validate_python(orders, from_attributes=True)
 
 
 @app.get("/orders/{item_id}")

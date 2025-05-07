@@ -1,5 +1,6 @@
 import datetime
 import logging
+from typing import Sequence
 
 from fastapi import HTTPException
 from faststream.exceptions import FastStreamException
@@ -77,6 +78,11 @@ class OrderService(BaseService):
         if not order:
             raise HTTPException(status_code=404, detail="Order not found")
         return order
+
+    async def get_list(self) -> Sequence[Order]:
+        stmt = select(Order).where(Order.deleted_at.is_(None))
+        result = await self.session.execute(stmt)
+        return result.scalars().all()
 
 
 class OutboxSaveService:
